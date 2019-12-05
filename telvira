@@ -1,0 +1,65 @@
+#!/bin/bash
+
+if ! which http > /dev/null; then
+   echo -e "Httpie must be installed! Install? (y/n) \c"
+   read REPLY
+   if [[ $REPLY == "y" ]]; then
+     sudo apt-get install httpie
+   fi
+fi
+if ! which jq > /dev/null; then
+   echo -e "jq must be installed! Install? (y/n) \c"
+   read REPLY
+   if [[ $REPLY == "y" ]]; then
+     sudo apt-get install jq
+   fi
+fi
+
+echo "Üdv a Telvirában!"
+cmd="search"
+while [[ $cmd != "exit" ]]; do
+
+  if [[ $cmd == *"more"* ]]; then
+    cim=( $cmd )
+    search=${cim[1]}
+    echo Ind./Érk.$'\t'Vágány$'\t'Állmás$'\t'$'\t'Vonatinfo
+    jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .details[] |.dep,"\t",.platform,"\t",.from,"\t","\t",.train_info.info,"\n"' televira
+  fi
+  if [[ $cmd == *"buy"* ]]; then
+    cim=( $cmd )
+    search=${cim[1]}
+    browse='tempfile'
+    cat | jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .ticketinfo.full_url' televira > browse
+    firefox $(cat browse) &
+  fi
+  if [[ $cmd == "search" ]]; then
+    echo "Add meg a kiinduálsi és cél állomást, ha szertnél több paramétert meg adni akkor írd hozzá hogy details(pl.: Győr Sopron details)"
+    read dep arr done
+
+    if [[ $done == "details" ]]; then
+      echo "Add meg az utazás dátumát:"
+      read d
+      echo "Szeretnél átszállások nélkül keresni?(True-False)"
+      read transfer
+      echo "Add meg milyen kedvezményeket szertnél igénybe venni:"
+      read tictype
+    fi
+    if [ -z "$d" ]
+    then
+        ftime=$(date +"%H:%M")
+    else
+        ftime=""
+    fi
+    telelvira='tempfile'
+    http "http://apiv2.oroszi.net/elvira?from=${dep}&to=${arr}&date=${d}&fromtime=${ftime}&wotransfer=${transfer}&type=${tictype}" > televira
+    echo Ind.$'\t'Érk.$'\t'Átsz.$'\t'Ut. idő$'\t'Táv$'\t'2.osztály$'\t'1.osztály
+    jq -j '.timetable[] | .starttime,"\t", .destinationtime,"\t", .change ,"\t", .totaltime,"\t", .distance ,"\t",.cost2nd,"\t", .cost1st, "\n"' televira
+  fi
+  read cmd
+done
+
+rm televira
+FILE=browse
+if [[ -f "$FILE" ]]; then
+  rm browse
+fi
