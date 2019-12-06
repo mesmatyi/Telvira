@@ -7,8 +7,8 @@ Letöltés `git clone https://github.com/cinesky/Telvira.git`
 
 Futtatási engedély adás  az adott mappából `chmod 755 telvira`
 
-Keresés: Kiindulás és Érkezési állomás megadása több keresési feltétel a `details` kapcsolóval lehet megadni
-Egyzerűsített keresés: `Sopron Győr`
+Keresés: Kiindulás és Érkezési állomás megadása több keresési feltételt a `details` kapcsolóval lehet megadni
+Egyserűsített keresés: `Sopron Győr`
 Több keresési feltétel: `Sopron Győr details`
 
 A kedvezméynek kódjának teljes listája: https://bitbucket.org/oroce/elvira-api/wiki/vegpontok/elvira.wiki#!jegy-tipusa
