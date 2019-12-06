@@ -20,20 +20,8 @@ echo "Üdv a Telvirában!"
 cmd="search"
 while [[ $cmd != "exit" ]]; do
 
-  if [[ $cmd == *"more"* ]]; then
-    cim=( $cmd )
-    search=${cim[1]}
-    echo Ind/Érk$'\t'Vágány$'\t'Állmás$'\t'$'\t'$'\t'Vonatinfo
-    jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .details[] |.dep,"\t",.platform,"\t",.from,"\t","\t","\t",.train_info.info,"\n"' televira
-  fi
-  if [[ $cmd == *"buy"* ]]; then
-    cim=( $cmd )
-    search=${cim[1]}
-    browse='tempfile'
-    cat|jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .ticketinfo.full_url' televira > browse
-    firefox $(cat browse)
-  fi
-  if [[ $cmd == "search" ]]; then
+  case $cmd in
+    "search" )
     echo "Add meg a kiinduálsi és cél állomást, ha szertnél több paramétert meg adni akkor írd hozzá hogy details(pl.: Győr Sopron details)"
     read dep arr done
 
@@ -51,11 +39,29 @@ while [[ $cmd != "exit" ]]; do
     else
         ftime=""
     fi
-    telelvira='tempfile'
+    telelvira=$(tempfile)
     http "http://apiv2.oroszi.net/elvira?from=${dep}&to=${arr}&date=${d}&fromtime=${ftime}&wotransfer=${transfer}&type=${tictype}" > televira
     echo Ind.$'\t'Érk.$'\t'Átsz.$'\t'Ut. idő$'\t'Táv$'\t'2.osztály$'\t'1.osztály
     jq -j '.timetable[] | .starttime,"\t", .destinationtime,"\t", .change ,"\t", .totaltime,"\t", .distance ,"\t",.cost2nd,"\t", .cost1st, "\n"' televira
-  fi
+      ;;
+    *"more"*)
+    cim=( $cmd )
+    search=${cim[1]}
+    echo Ind/Érk$'\t'Vágány$'\t'Állmás$'\t'$'\t'$'\t'Vonatinfo
+    jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .details[] |.dep,"\t",.platform,"\t",.from,"\t","\t","\t",.train_info.info,"\n"' televira
+      ;;
+    *"buy"*)
+    cim=( $cmd )
+    search=${cim[1]}
+    browse=$(tempfile)
+    cat|jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .ticketinfo.full_url' televira > browse
+    if [[ -s $"browse" ]]; then
+      firefox $(cat browse)
+    else
+      echo Nincs ilyen vonat!
+    fi
+      ;;
+  esac
   read cmd
 done
 
