@@ -39,7 +39,7 @@ Ind/Érk Vágány  Állmás                  Vonatinfo
 ```
 
 
-Jegyet a `buy` és a vonat indulási idejének megadásával lehet indítani. pl.: `buy 16:21`
+Jegyetvásárlást a `buy` és a vonat indulási idejének megadásával lehet indítani. pl.: `buy 16:21`
 
 Új keresést a `search` megadásával lehet indítani.
 
