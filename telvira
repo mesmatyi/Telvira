@@ -40,6 +40,7 @@ while [[ $cmd != "exit" ]]; do
         ftime=""
     fi
     telelvira=$(tempfile)
+    #API kérés, majd a választ egy .json fáljban mentem
     http "http://apiv2.oroszi.net/elvira?from=${dep}&to=${arr}&date=${d}&fromtime=${ftime}&wotransfer=${transfer}&type=${tictype}" > televira
     echo Ind.$'\t'Érk.$'\t'Átsz.$'\t'Ut. idő$'\t'Táv$'\t'2.osztály$'\t'1.osztály
     jq -j '.timetable[] | .starttime,"\t", .destinationtime,"\t", .change ,"\t", .totaltime,"\t", .distance ,"\t",.cost2nd,"\t", .cost1st, "\n"' televira
