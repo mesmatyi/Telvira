@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# kötelező utility-k telepítése ha nincsenek már telepítve
 if ! which http > /dev/null; then
    echo -e "Httpie must be installed! Install? (y/n) \c"
    read REPLY
@@ -22,15 +23,15 @@ while [[ $cmd != "exit" ]]; do
   if [[ $cmd == *"more"* ]]; then
     cim=( $cmd )
     search=${cim[1]}
-    echo Ind./Érk.$'\t'Vágány$'\t'Állmás$'\t'$'\t'Vonatinfo
-    jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .details[] |.dep,"\t",.platform,"\t",.from,"\t","\t",.train_info.info,"\n"' televira
+    echo Ind/Érk$'\t'Vágány$'\t'Állmás$'\t'$'\t'$'\t'Vonatinfo
+    jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .details[] |.dep,"\t",.platform,"\t",.from,"\t","\t","\t",.train_info.info,"\n"' televira
   fi
   if [[ $cmd == *"buy"* ]]; then
     cim=( $cmd )
     search=${cim[1]}
     browse='tempfile'
-    cat | jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .ticketinfo.full_url' televira > browse
-    firefox $(cat browse) &
+    cat|jq -j '.timetable[] | select(.starttime | contains("'$search'")) | .ticketinfo.full_url' televira > browse
+    firefox $(cat browse)
   fi
   if [[ $cmd == "search" ]]; then
     echo "Add meg a kiinduálsi és cél állomást, ha szertnél több paramétert meg adni akkor írd hozzá hogy details(pl.: Győr Sopron details)"
