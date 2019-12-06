@@ -5,21 +5,21 @@ if ! which http > /dev/null; then
    echo -e "Httpie must be installed! Install? (y/n) \c"
    read REPLY
    if [[ $REPLY == "y" ]]; then
-     sudo apt-get install httpie
+     sudo apt-get install -y httpie
    fi
 fi
 if ! which jq > /dev/null; then
    echo -e "jq must be installed! Install? (y/n) \c"
    read REPLY
    if [[ $REPLY == "y" ]]; then
-     sudo apt-get install jq
+     sudo apt-get install -y jq
    fi
 fi
 
 echo "Üdv a Telvirában!"
 cmd="search"
 while [[ $cmd != "exit" ]]; do
-
+  #switch case három funkcióra search, buy, more
   case $cmd in
     "search" )
     echo "Add meg a kiinduálsi és cél állomást, ha szertnél több paramétert meg adni akkor írd hozzá hogy details(pl.: Győr Sopron details)"
@@ -28,7 +28,7 @@ while [[ $cmd != "exit" ]]; do
     if [[ $done == "details" ]]; then
       echo "Add meg az utazás dátumát:"
       read d
-      echo "Szeretnél átszállások nélkül keresni?(True-False)"
+      echo "Szeretnél átszállások nélkül keresni?(true-false)"
       read transfer
       echo "Add meg milyen kedvezményeket szertnél igénybe venni:"
       read tictype
