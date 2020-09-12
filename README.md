@@ -3,7 +3,7 @@ Linux Terminal based elvira(online timetable for MÁV)
 
 Adatforrás (nem hivatalos elvira API) https://bitbucket.org/oroce/elvira-api/wiki/Home
 
-Letöltés `git clone https://github.com/cinesky/Telvira.git`
+Letöltés `git clone https://github.com/mesmatyi/Telvira.git`
 
 Futtatási engedély adás  az adott mappából `chmod 755 telvira`
 
